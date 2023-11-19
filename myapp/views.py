@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
+from datetime import datetime
 
 def main(request: HttpRequest):
-    return HttpResponse("Main page. Blog list.")
+    return render(request, 'navbar.html')
 
 def general_information(request):
     return  HttpResponse("Information about the site.")
@@ -24,10 +25,13 @@ def deactivate(request):
     return HttpResponse("Delite account")
 
 def register(request):
-    return HttpResponse("New account")
+    return render(request, 'registration.html')
 
 def login(request):
-    return HttpResponse("Form for login")
+    return render(request, 'login.html')
 
 def logout(request):
     return HttpResponse("Way to home page")
+
+
+
