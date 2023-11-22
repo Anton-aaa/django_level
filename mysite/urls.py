@@ -32,7 +32,7 @@ from myapp.views import (main,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", main, name='main'),
-    path("about", general_information),
+    path("about", general_information, name="about"),
     path("<int:article_id>/", include("myapp.article.urls_article")),
     path("create", create, name='create'),
     path("topics/", include("myapp.topics.urls_topics")),

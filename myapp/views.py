@@ -12,11 +12,11 @@ def general_information(request):
 def create(request):
     return HttpResponse("Create new article.")
 
-def personal_page(request, username):
-    return HttpResponse(f"This is page '{username}'.")
+def personal_page(request, username = "asedf"):
+    return render(request, 'profile.html', {"username":username})
 
 def set_password(request):
-    return HttpResponse("This is page for change credentials")
+    return HttpResponse("This is page for set password")
 
 def set_user_data(request):
     return HttpResponse("This is page for change account information")
