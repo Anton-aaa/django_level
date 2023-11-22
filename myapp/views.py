@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpRequest
 from datetime import datetime
 
 def main(request: HttpRequest):
-    return render(request, 'navbar.html')
+    return render(request, 'main.html')
 
 def general_information(request):
     return  HttpResponse("Information about the site.")
