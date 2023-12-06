@@ -5,7 +5,6 @@ urlpatterns = [
 
     path("", get_article),
     path("comment/", comment),
-path("update/", update),
-path("delete/", delete),
-
+    path("update/", update),
+    path("delete/", delete),
 ]

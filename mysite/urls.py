@@ -25,21 +25,22 @@ from myapp.views import (main,
                          deactivate,
                          register,
                          login,
-                         logout)
+                         logout
+                         )
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-path("",main),
-    path("about", general_information),
-path("<int:article_id>/",include("myapp.article.urls_article")),
-path("create",create),
-path("topics/",include("myapp.topics.urls_topics")),
-path("profile/<str:username>/",personal_page),
-path("set-password/",set_password),
-path("set-userdata/",set_user_data),
-path("deactivate/",deactivate),
-path("register/",register),
-path("login/",login),
-path("logout/",logout),
+    path("", main, name='main'),
+    path("about", general_information, name="about"),
+    path("<int:article_id>/", include("myapp.article.urls_article")),
+    path("create", create, name='create'),
+    path("topics/", include("myapp.topics.urls_topics")),
+    path("profile/<str:username>/", personal_page, name="personal_page"),
+    path("set-password/", set_password),
+    path("set-userdata/", set_user_data),
+    path("deactivate/", deactivate),
+    path("register/", register, name="register"),
+    path("login/", login, name="login"),
+    path("logout/", logout),
 ]

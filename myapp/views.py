@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
+from datetime import datetime
 
 def main(request: HttpRequest):
-    return HttpResponse("Main page. Blog list.")
+    return render(request, 'main.html')
 
 def general_information(request):
     return  HttpResponse("Information about the site.")
@@ -11,11 +12,11 @@ def general_information(request):
 def create(request):
     return HttpResponse("Create new article.")
 
-def personal_page(request, username):
-    return HttpResponse(f"This is page '{username}'.")
+def personal_page(request, username = "asedf"):
+    return render(request, 'profile.html', {"username":username})
 
 def set_password(request):
-    return HttpResponse("This is page for change credentials")
+    return HttpResponse("This is page for set password")
 
 def set_user_data(request):
     return HttpResponse("This is page for change account information")
@@ -24,10 +25,13 @@ def deactivate(request):
     return HttpResponse("Delite account")
 
 def register(request):
-    return HttpResponse("New account")
+    return render(request, 'registration.html')
 
 def login(request):
-    return HttpResponse("Form for login")
+    return render(request, 'login.html')
 
 def logout(request):
     return HttpResponse("Way to home page")
+
+
+
