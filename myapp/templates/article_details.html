@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{details.title}}</h1>
+<a>{{details.text}}</a>
+<h2>Comments</h2>
+{% for text_com in comments %}
+<li><a>{{text_com}}</a></li>
+{% endfor %}
+{% endblock %}
