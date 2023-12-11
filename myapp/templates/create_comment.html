@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post" action="{% url 'form-view' %}">
+<form method="post" action="{% url 'add_comment' article%}">
     {% csrf_token %}
     {{ form }}
+    {{article}}
     <button type="submit">Send form</button>
 </form>
 {% endblock %}

@@ -3,9 +3,7 @@
 {% block content %}
 {%include "navbar.html"%}
 
-<h1>All topics</h1>
-<a href="{% url 'topics' %}">Topics</a>
-<h1>All articles</h1>
+<h1>{{title}}</h1>
 {% for article in articles %}
 <li><a href="{% url 'article_url' article.id %}">{{ article.title }}</a></li>
 {% endfor %}

@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{%include "navbar.html"%}
 
 <h1>{{details.title}}</h1>
 <a>{{details.text}}</a>
+<br><a href="{% url 'add_comment' details.id %}">Comment on this article</a></br>
 <h2>Comments</h2>
 {% for text_com in comments %}
-<li><a>{{text_com}}</a></li>
+<li><a>{{ text_com }}</a></li>
 {% endfor %}
 {% endblock %}

@@ -1,15 +1,20 @@
 from django import forms
+from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
+from django.forms import TextInput
+
+from myapp.models import Article, Comment
+
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=100)
-    password = forms.CharField(label='Password', max_length=100)
+    username = forms.CharField(label='New username', max_length=100)
+    password = forms.CharField(label='New password', max_length=100)
 
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
-        nickname = cleaned_data.get('nickname')
+        nickname = cleaned_data.get('username')
         if str(password) in nickname:
             self.add_error('password', "Password can't be in nickname")
 
@@ -36,4 +41,21 @@ class AuthenticationForm(forms.Form):
             self.user = authenticate(username=username, password=password)
             if self.user is None:
                 raise forms.ValidationError("No profile")
+
+
+class SearchForm(forms.Form):
+    title = forms.CharField(label='Article title', max_length=100)
+
+class ArticleForm(ModelForm):
+    class Meta:
+        model = Article
+        fields = ["title", "text"]
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["message"]
+
+
 

@@ -26,7 +26,9 @@ from myapp.views import (main,
                          deactivate,
                          register,
                          my_login,
-                         logout
+                         my_logout,
+                         search_article,
+                         add_comment,
                          )
 
 
@@ -35,7 +37,7 @@ urlpatterns = [
     path("", main, name='main'),
     path("about", general_information, name="about"),
     path("article/<int:article_id>/", include("myapp.article.urls_article")),
-    path("create", create, name='create'),
+    path("create_article", create, name='create_article'),
     path("topics/", include("myapp.topics.urls_topics")),
     path("profile/<str:username>/", personal_page, name="personal_page"),
     path("set-password/", set_password),
@@ -43,6 +45,7 @@ urlpatterns = [
     path("deactivate/", deactivate),
     path("register/", register, name="register"),
     path("login/", my_login, name="login"),
-    path("logout/", logout),
-    path('form-url/', form_view, name='form-view')
+    path("logout/", my_logout, name="logout"),
+    path('search', search_article, name='search'),
+    path("add_comment/<int:article_id>", add_comment, name='add_comment')
 ]
