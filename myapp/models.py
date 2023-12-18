@@ -20,10 +20,13 @@ class Article(models.Model):
     publications = models.ManyToManyField(Topic, related_name="article_publications")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_article', null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_article',)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['-created_at', ]
 
 
 class Comment(models.Model):
@@ -32,5 +35,3 @@ class Comment(models.Model):
     contains = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='contains', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_comment', null=True, blank=True)
 
-    def __str__(self):
-        return self.message

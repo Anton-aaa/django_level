@@ -2,10 +2,10 @@
 
 {% block content %}
 {%include "navbar.html"%}
-
-<h1>{{details.title}}</h1>
-<a>{{details.description}}</a>
-{% for article in articles %}
+<h1>{{topic.title}}</h1>
+<a>{{topic.description}}</a>
+<br></br>
+{% for article in topic %}
 <li><a href="{% url 'article_url' article.id %}">{{ article.title }}</a></li>
 {% endfor %}
 {% endblock %}

@@ -6,7 +6,7 @@ import datetime
 
 class ArticleAdmin(admin.ModelAdmin):
     fields = ('title', 'text', 'publications', 'author')
-    list_display = ('id', 'title', 'text', 'created_at', 'updated_at', 'author')
+    list_display = ( 'title', 'id', 'text', 'created_at', 'updated_at', 'author')
 
 
 admin.site.register(Article, ArticleAdmin)

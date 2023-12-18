@@ -2,12 +2,36 @@
 
 {% block content %}
 {%include "navbar.html"%}
+<h1>{{article.title}}</h1>
+<br><a>{{article.text}}</a></br>
+<br><a>{{article.publications}}</a></br>
+<br><a>Author: {{article.author}}</a></br>
+<br><a>Created date: {{article.created_at}}</a></br>
+<br><a>Update date: {{article.updated_at}}</a></br>
+    {% if article.author == request.user %}
+<br><a href="{% url 'article_update' article.pk %}">Update article</a></br>
+ <form method="post" action="{% url 'article_delete' article.pk %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete article">
+        </form>
+    {% endif %}
+<br><a>Comment on this article:</a></br>
+<br><form method="post" action="{% url 'add_comment' pk %}">
+    {% csrf_token %}
+    {{ create_form }}
+    <input type="submit" value="Create">
+</form></br>
 
-<h1>{{details.title}}</h1>
-<a>{{details.text}}</a>
-<br><a href="{% url 'add_comment' details.id %}">Comment on this article</a></br>
 <h2>Comments</h2>
-{% for text_com in comments %}
-<li><a>{{ text_com }}</a></li>
+{% for comment in comments %}
+<br><li><a>{{ comment.message }}</a></li></br>
+{% if comment.author == request.user %}
+ <form method="post" action="{% url 'comment_delete' comment.pk %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete comment">
+        </form>
+{% endif %}
 {% endfor %}
+
+
 {% endblock %}

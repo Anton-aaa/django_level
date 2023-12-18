@@ -1,9 +1,10 @@
-from .views import get_article, comment, update, delete
-from django.urls import path,include
+from .views import comment, update, delete, ArticleDetailView
+from django.urls import path
+
 
 urlpatterns = [
 
-    path("", get_article, name='article_url'),
+    path("", ArticleDetailView.as_view(), name='article_url'),
     path("comment/", comment),
     path("update/", update),
     path("delete/", delete),

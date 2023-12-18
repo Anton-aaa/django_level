@@ -14,38 +14,48 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from myapp.views import form_view
+
 from django.contrib import admin
 from django.urls import path, include
-from myapp.views import (main,
-                         general_information,
-                         create,
+from myapp.views import (ArticleListView,
+                         AboutView,
+                         CreateArticle,
                          personal_page,
                          set_password,
                          set_user_data,
                          deactivate,
-                         register,
-                         my_login,
-                         my_logout,
+                         Register,
+                         MyLogin,
+                         MyLogout,
                          search_article,
-                         add_comment,
+                         CreateComment,
+                         no_logout,
+                         ArticleDeleteView,
+                         CommentDeleteView,
+                         ArticleUpdateView
                          )
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", main, name='main'),
-    path("about", general_information, name="about"),
-    path("article/<int:article_id>/", include("myapp.article.urls_article")),
-    path("create_article", create, name='create_article'),
+    path("", ArticleListView.as_view(), name='main'),
+    path("about", AboutView.as_view(), name="about"),
+    path("article/<int:pk>/", include("myapp.article.urls_article")),
+    path("create_article", CreateArticle.as_view(), name='create_article'),
     path("topics/", include("myapp.topics.urls_topics")),
-    path("profile/<str:username>/", personal_page, name="personal_page"),
+    path("profile/<int:username>/", personal_page, name="personal_page"),
     path("set-password/", set_password),
     path("set-userdata/", set_user_data),
     path("deactivate/", deactivate),
-    path("register/", register, name="register"),
-    path("login/", my_login, name="login"),
-    path("logout/", my_logout, name="logout"),
+    path("register/", Register.as_view(), name="register"),
+    path("login/", MyLogin.as_view(), name="login"),
+    path("logout/", MyLogout.as_view(), name="logout"),
     path('search', search_article, name='search'),
-    path("add_comment/<int:article_id>", add_comment, name='add_comment')
+    path("add_comment/<int:pk>/", CreateComment.as_view(), name='add_comment'),
+    path('comment/delete/<int:pk>/', CommentDeleteView.as_view(), name='comment_delete'),
+    path("no_logout/", no_logout, name='no_logout'),
+    path("successfully/", no_logout, name='successfully'),
+    path('article/delete/<int:pk>/', ArticleDeleteView.as_view(), name='article_delete'),
+    path('article/update/<int:pk>/', ArticleUpdateView.as_view(), name='article_update'),
+
 ]

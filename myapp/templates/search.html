@@ -2,7 +2,6 @@
 
 {% block content %}
 {%include "navbar.html"%}
-
 <form method="POST" action="{% url 'search' %}">
     {% csrf_token %}
     {{ form }}
