@@ -3,9 +3,16 @@
 {% block content %}
 {%include "navbar.html"%}
 <h1>{{topic.title}}</h1>
+{% if request.user %}
+    <br><form method="post" action="{% url 'topic_subscribe_url' topic.pk %}">
+                {% csrf_token %}
+                <input type="submit" value="Subscribe">
+            </form></br>
+    {% endif %}
+<br></br>
 <a>{{topic.description}}</a>
 <br></br>
-{% for article in topic %}
-<li><a href="{% url 'article_url' article.id %}">{{ article.title }}</a></li>
+{% for article in article %}
+<br><li><a href="{% url 'article_url' article.id %}">{{ article }}</a></li></br>
 {% endfor %}
 {% endblock %}

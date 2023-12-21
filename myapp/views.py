@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordResetDoneView
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.forms import CharField, PasswordInput, ModelForm
 from django.shortcuts import render, redirect
@@ -8,19 +8,23 @@ from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from datetime import datetime
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic import TemplateView, FormView, CreateView, DeleteView, ListView, UpdateView
-from myapp.forms import AuthenticationForm, RegisterForm, SearchForm, ArticleForm, CommentForm, UserCreationForm
+from django.views.generic import TemplateView, FormView, CreateView, DeleteView, ListView, UpdateView, DetailView
+from myapp.forms import AuthenticationForm, RegisterForm, SearchForm, ArticleForm, CommentForm, UserCreationForm, \
+    UserUpdateForm, UserUpdatePasswordForm
 from django.contrib.auth import login, logout
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from myapp.models import Article, Comment
+from myapp.models import Article, Comment, Topic
+from django.core.cache import cache
 
 
 class ArticleListView(ListView):
     model = Article
     template_name = 'main.html'
     context_object_name = "articles"
+    paginate_by = 5
 
 
 class AboutView(TemplateView):
@@ -49,17 +53,56 @@ class CreateArticle(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-def personal_page(request, username = "asedf"):
-    return render(request, 'profile.html', {"username": username})
+# class UserListView(ListView):
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = "article_details.html"
+    context_object_name = "article"
 
-def set_password(request):
-    return HttpResponseRedirect(reverse('article_url', args=[46]))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        context['create_form'] = CommentForm()
+        context['comments'] = Comment.objects.filter(contains=kwargs['object'].id)
+        return context
 
-def set_user_data(request):
-    return HttpResponse("This is page for change account information")
 
-def deactivate(request):
-    return HttpResponse("Delite account")
+class UserUpdatePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = "password_update.html"
+    success_url = reverse_lazy('main')
+    login_url = '/login/'
+
+
+class MyPasswordResetDoneView(PasswordResetDoneView):
+    template_name = "password_reset_done"
+
+
+class UserUpdateView(LoginRequiredMixin, FormView):
+    template_name = "username_update.html"
+    form_class = UserUpdateForm
+    success_url = reverse_lazy('main')
+    login_url = '/login/'
+
+
+    def form_valid(self, form):
+        update = self.request.user
+        update.username = form.cleaned_data['username']
+        update.save()
+        return super().form_valid(form)
+
+
+# def set_user_data(request):
+#     cache.get_or_set('five', 1)
+#     if not cache.get('five') % 5 and not cache.get('five') == 0:
+#         cache.set('five', cache.get('five') + 1)
+#         return HttpResponse('five time')
+#     cache.set('five', cache.get('five') + 1)
+#     print(cache.get('five'))
+#     return HttpResponse("Not five time")
+
+
+# def deactivate(request):
+#     return HttpResponse("Delite account")
 
 
 class Register(CreateView):
@@ -70,21 +113,14 @@ class Register(CreateView):
 
 class MyLogin(LoginView):
     template_name = 'login.html'
-    success_url = reverse_lazy('topics')
 
+    def get_success_url(self):
+            return reverse('main')
 
 class MyLogout(LoginRequiredMixin, LogoutView):
     login_url = '/login/'
-    success_url = reverse_lazy('topics')
-
-    @method_decorator(csrf_protect)
-    def post(self, request, *args, **kwargs):
-        logout(request)
-        redirect_to = self.get_success_url()
-        if redirect_to != request.get_full_path():
-            # Redirect to target page once the session has been cleared.
-            return HttpResponseRedirect(reverse("main"))
-        return HttpResponseRedirect(reverse("main"))
+    def get_success_url(self):
+            return reverse('main')
 
 
 def search_article(request):
@@ -123,8 +159,21 @@ class CreateComment(LoginRequiredMixin, CreateView):
 
 
 
-def no_logout(request):
-    return render(request, 'no_logout.html')
+def logout_success(request):
+    return render(request, 'logout_success.html')
+
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = "profile_details.html"
+    context_object_name = "profile"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        context['topics'] = Topic.objects.filter(prefers=kwargs['object'].id)
+        return context
+
 
 
 class ArticleDeleteView(LoginRequiredMixin, DeleteView):
@@ -144,6 +193,51 @@ class ArticleUpdateView(UpdateView):
     context_object_name = 'article'
 
 
+def settings(request):
+    return render(request, 'settings.html')
+
+
+class ProfileDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+
+    def get_success_url(self):
+        return reverse('main')
+
+
+def exactly_del(request):
+    return render(request, 'exactly_del.html', {"id": request.user.id})
+
+class TopicsListView(ListView):
+    model = Topic
+    template_name = 'topics.html'
+    context_object_name = "topics"
+    paginate_by = 5
+
+
+class TopicDetailView(DetailView):
+    model = Topic
+    template_name = "topic_details.html"
+    context_object_name = "topic"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['pk'] = self.kwargs['pk']
+        context['article'] = Article.objects.filter(publications=kwargs['object'].id)
+        return context
+
+
+class SubscribeTopicView(View):
+    def post(self, request, *args, **kwargs):
+        topic = Topic.objects.filter(id=self.kwargs['pk']).first()
+        topic.prefers.add(request.user)
+        return render(request, 'subscribe_success.html', {"topic":topic})
+
+class UnsubscribeTopicView(View):
+    def post(self, request, *args, **kwargs):
+        topic = Topic.objects.filter(id=self.kwargs['pk']).first()
+        topic.prefers.remove(request.user)
+        return render(request, 'unsubscribe_success.html')
 
 
 

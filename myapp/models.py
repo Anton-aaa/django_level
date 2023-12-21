@@ -8,7 +8,7 @@ User = get_user_model()
 class Topic(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
-    prefers = models.ManyToManyField(User)
+    prefers = models.ManyToManyField(User, null=True, blank=True)
 
     def __str__(self):
         return self.title

@@ -4,16 +4,19 @@
 {%include "navbar.html"%}
 <h1>{{article.title}}</h1>
 <br><a>{{article.text}}</a></br>
-<br><a>{{article.publications}}</a></br>
+<br>Topic:</br>
+{% for topic in article.publications.all %}
+<a href="{% url 'topic_details_url' topic.id %}">{{topic}}/</a>
+{% endfor %}
 <br><a>Author: {{article.author}}</a></br>
 <br><a>Created date: {{article.created_at}}</a></br>
 <br><a>Update date: {{article.updated_at}}</a></br>
     {% if article.author == request.user %}
-<br><a href="{% url 'article_update' article.pk %}">Update article</a></br>
- <form method="post" action="{% url 'article_delete' article.pk %}">
-            {% csrf_token %}
-            <input type="submit" value="Delete article">
-        </form>
+    <br><a href="{% url 'article_update' article.pk %}">Update article</a></br>
+    <br><form method="post" action="{% url 'article_delete' article.pk %}">
+                {% csrf_token %}
+                <input type="submit" value="Delete article">
+            </form></br>
     {% endif %}
 <br><a>Comment on this article:</a></br>
 <br><form method="post" action="{% url 'add_comment' pk %}">

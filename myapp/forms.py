@@ -90,7 +90,34 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username",)
 
+
+class UserUpdatePasswordForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('password',)
+
+    # error_messages = {
+    #     'password_mismatch': ("The two password fields didn't match."),
+    # }
+    # password2 = forms.CharField(label=("Password confirmation"),
+    #                             widget=forms.PasswordInput,
+    #                             help_text=("Enter the same password as above for verification."))
+    #
+    #
+    # def clean_password2(self):
+    #     password = self.cleaned_data.get("password")
+    #     password2 = self.cleaned_data.get("password2")
+    #     if password and password2 and password != password2:
+    #         raise forms.ValidationError(
+    #             self.error_messages['password_mismatch'],
+    #             code='password_mismatch',
+    #         )
+    #     return password2
 
 
 

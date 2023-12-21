@@ -2,8 +2,9 @@
 
 {% block content %}
 {%include "navbar.html"%}
-<form method="post" action="">
+<form method="post" action="{% url 'set_userdata' %}">
     {% csrf_token %}
+    <br><a>Update username</a></br>
     {{ form }}
     <button type="submit">Send form</button>
 </form>
