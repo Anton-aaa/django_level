@@ -3,7 +3,7 @@
 {% block content %}
 {%include "navbar.html"%}
 <h1>Are you sure you want to delete Profile?</h1>
-<form method="post" action="{% url 'deactivate' id %}">
+<form method="post" action="{% url 'deactivate' request.user.id %}">
     {% csrf_token %}
     <input type="submit" value="Delete">
 </form>

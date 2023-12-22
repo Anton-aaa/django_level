@@ -36,7 +36,7 @@ class CreateArticle(LoginRequiredMixin, CreateView):
     model = Article
     fields = ['title', 'text', 'publications']
     success_url = reverse_lazy('main')
-    login_url = '/login/'
+    login_url = 'login'
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -70,7 +70,7 @@ class ArticleDetailView(DetailView):
 class UserUpdatePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = "password_update.html"
     success_url = reverse_lazy('main')
-    login_url = '/login/'
+    login_url = 'login'
 
 
 class MyPasswordResetDoneView(PasswordResetDoneView):
@@ -81,7 +81,7 @@ class UserUpdateView(LoginRequiredMixin, FormView):
     template_name = "username_update.html"
     form_class = UserUpdateForm
     success_url = reverse_lazy('main')
-    login_url = '/login/'
+    login_url = 'login'
 
 
     def form_valid(self, form):
@@ -89,20 +89,6 @@ class UserUpdateView(LoginRequiredMixin, FormView):
         update.username = form.cleaned_data['username']
         update.save()
         return super().form_valid(form)
-
-
-# def set_user_data(request):
-#     cache.get_or_set('five', 1)
-#     if not cache.get('five') % 5 and not cache.get('five') == 0:
-#         cache.set('five', cache.get('five') + 1)
-#         return HttpResponse('five time')
-#     cache.set('five', cache.get('five') + 1)
-#     print(cache.get('five'))
-#     return HttpResponse("Not five time")
-
-
-# def deactivate(request):
-#     return HttpResponse("Delite account")
 
 
 class Register(CreateView):
@@ -118,7 +104,7 @@ class MyLogin(LoginView):
             return reverse('main')
 
 class MyLogout(LoginRequiredMixin, LogoutView):
-    login_url = '/login/'
+    login_url = 'login'
     def get_success_url(self):
             return reverse('main')
 
@@ -134,7 +120,7 @@ def search_article(request):
 
 
 class CreateComment(LoginRequiredMixin, CreateView):
-    login_url = 'login/'
+    login_url = 'login'
     http_method_names = ['post']
     form_class = CommentForm
 
@@ -158,9 +144,8 @@ class CreateComment(LoginRequiredMixin, CreateView):
             return reverse('article_url', kwargs={'pk':self.kwargs['pk']})
 
 
-
-def logout_success(request):
-    return render(request, 'logout_success.html')
+class LogoutSuccessView(TemplateView):
+    template_name = "logout_success.html"
 
 
 class UserDetailView(DetailView):
@@ -179,11 +164,13 @@ class UserDetailView(DetailView):
 class ArticleDeleteView(LoginRequiredMixin, DeleteView):
     model = Article
     success_url = '/'
+    login_url = 'login'
 
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     success_url = '/'
+    login_url = 'login'
 
 class ArticleUpdateView(UpdateView):
     model = Article
@@ -193,8 +180,12 @@ class ArticleUpdateView(UpdateView):
     context_object_name = 'article'
 
 
-def settings(request):
-    return render(request, 'settings.html')
+class SettingView(LoginRequiredMixin, TemplateView):
+    template_name = "settings.html"
+    login_url = 'login'
+
+# def settings(request):
+#     return render(request, 'settings.html')
 
 
 class ProfileDeleteView(LoginRequiredMixin, DeleteView):
@@ -204,8 +195,8 @@ class ProfileDeleteView(LoginRequiredMixin, DeleteView):
         return reverse('main')
 
 
-def exactly_del(request):
-    return render(request, 'exactly_del.html', {"id": request.user.id})
+class ExactlyDelView(TemplateView):
+    template_name = "exactly_del.html"
 
 class TopicsListView(ListView):
     model = Topic
@@ -221,7 +212,6 @@ class TopicDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context['pk'] = self.kwargs['pk']
         context['article'] = Article.objects.filter(publications=kwargs['object'].id)
         return context

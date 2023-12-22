@@ -4,11 +4,18 @@
 {%include "navbar.html"%}
 <h1>{{topic.title}}</h1>
 {% if request.user %}
+    {% if not request.user in topic.prefers.all %}
     <br><form method="post" action="{% url 'topic_subscribe_url' topic.pk %}">
                 {% csrf_token %}
                 <input type="submit" value="Subscribe">
             </form></br>
+    {% else %}
+    <form method="post" action="{% url 'topic_unsubscribe_url' topic.pk %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Unsubscribe">
+                </form>
     {% endif %}
+{% endif %}
 <br></br>
 <a>{{topic.description}}</a>
 <br></br>

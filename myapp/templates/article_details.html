@@ -8,25 +8,28 @@
 {% for topic in article.publications.all %}
 <a href="{% url 'topic_details_url' topic.id %}">{{topic}}/</a>
 {% endfor %}
-<br><a>Author: {{article.author}}</a></br>
+<br><a href="{% url 'personal_page' article.author.id %}">Author: {{article.author}}</a></br>
 <br><a>Created date: {{article.created_at}}</a></br>
 <br><a>Update date: {{article.updated_at}}</a></br>
-    {% if article.author == request.user %}
+{% if article.author == request.user %}
     <br><a href="{% url 'article_update' article.pk %}">Update article</a></br>
     <br><form method="post" action="{% url 'article_delete' article.pk %}">
                 {% csrf_token %}
                 <input type="submit" value="Delete article">
             </form></br>
-    {% endif %}
-<br><a>Comment on this article:</a></br>
-<br><form method="post" action="{% url 'add_comment' pk %}">
-    {% csrf_token %}
-    {{ create_form }}
-    <input type="submit" value="Create">
-</form></br>
+{% endif %}
+{% if user.is_authenticated %}
+    <br><a>Comment on this article:</a></br>
+    <br><form method="post" action="{% url 'add_comment' pk %}">
+        {% csrf_token %}
+        {{ create_form }}
+        <input type="submit" value="Create">
+    </form></br>
+{% endif %}
 
 <h2>Comments</h2>
 {% for comment in comments %}
+<a href="{% url 'personal_page' comment.author.pk %}">{{ comment.author }}</a>
 <br><li><a>{{ comment.message }}</a></li></br>
 {% if comment.author == request.user %}
  <form method="post" action="{% url 'comment_delete' comment.pk %}">
