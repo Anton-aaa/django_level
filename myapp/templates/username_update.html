@@ -2,11 +2,10 @@
 
 {% block content %}
 {%include "navbar.html"%}
-<form method="POST" action="{% url 'login' %}">
+<form method="post" action="{% url 'set_userdata' %}">
     {% csrf_token %}
-    <br><a>Enter the site</a></br>
+    <br><a>Update username</a></br>
     {{ form }}
     <button type="submit">Send form</button>
-    <br><a href="{% url 'register' %}">Registration</a></br>
 </form>
 {% endblock %}

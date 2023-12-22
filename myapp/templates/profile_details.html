@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{%include "navbar.html"%}
+<h1>Profile {{profile.username}}</h1>
+<br><a>My favorite topics:</a></br>
+{% for topic in topics %}
+<br><li><a href="{% url 'topic_details_url' topic.id %}">{{ topic }}</a></li></br>
+    {% if request.user == profile %}
+    <form method="post" action="{% url 'topic_unsubscribe_url' topic.pk %}">
+                {% csrf_token %}
+                <input type="submit" value="Unsubscribe">
+            </form>
+    {% endif %}
+{% endfor %}
+{% endblock %}

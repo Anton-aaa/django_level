@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{%include "navbar.html"%}
+<h1>Subscribe success</h1>
+<a href="{% url 'topic_details_url' topic.id %}">{{ topic.title }}</a>
+{% endblock %}

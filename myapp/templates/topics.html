@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<a>All topics.</a>
+{%include "navbar.html"%}
+<br><h1>Topics</h1></br>
+{% for topic in topics %}
+<li><a href="{% url 'topic_details_url' topic.id %}">{{ topic.title }}</a></li>
+<a>{{ topic.description }}</a>
+<br></br>
+{% endfor %}
 {% endblock %}

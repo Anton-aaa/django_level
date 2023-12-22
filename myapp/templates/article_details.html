@@ -1,11 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h1>{{details.title}}</h1>
-<a>{{details.text}}</a>
-<h2>Comments</h2>
-{% for text_com in comments %}
-<li><a>{{text_com}}</a></li>
+{%include "navbar.html"%}
+<h1>{{article.title}}</h1>
+<br><a>{{article.text}}</a></br>
+<br>Topic:</br>
+{% for topic in article.publications.all %}
+<a href="{% url 'topic_details_url' topic.id %}">{{topic}}/</a>
 {% endfor %}
+<br><a href="{% url 'personal_page' article.author.id %}">Author: {{article.author}}</a></br>
+<br><a>Created date: {{article.created_at}}</a></br>
+<br><a>Update date: {{article.updated_at}}</a></br>
+{% if article.author == request.user %}
+    <br><a href="{% url 'article_update' article.pk %}">Update article</a></br>
+    <br><form method="post" action="{% url 'article_delete' article.pk %}">
+                {% csrf_token %}
+                <input type="submit" value="Delete article">
+            </form></br>
+{% endif %}
+{% if user.is_authenticated %}
+    <br><a>Comment on this article:</a></br>
+    <br><form method="post" action="{% url 'add_comment' pk %}">
+        {% csrf_token %}
+        {{ create_form }}
+        <input type="submit" value="Create">
+    </form></br>
+{% endif %}
+
+<h2>Comments</h2>
+{% for comment in comments %}
+<a href="{% url 'personal_page' comment.author.pk %}">{{ comment.author }}</a>
+<br><li><a>{{ comment.message }}</a></li></br>
+{% if comment.author == request.user %}
+ <form method="post" action="{% url 'comment_delete' comment.pk %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete comment">
+        </form>
+{% endif %}
+{% endfor %}
+
+
 {% endblock %}

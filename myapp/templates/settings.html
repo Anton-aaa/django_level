@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{%include "navbar.html"%}
+<h1>Settings</h1>
+<li><a href="{%url 'set_userdata'%}" > Change username</a></li>
+<li><a href="{%url 'set_password'%}" > Change password</a></li>
+<li><a href="{% url 'exactly_del'%}" > Delite profile</a></li>
+<li><a href="{% url 'personal_page' request.user.id %}" > Profile</a></li>
+
+
+{% endblock %}
