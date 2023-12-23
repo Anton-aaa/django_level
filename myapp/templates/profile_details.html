@@ -13,4 +13,8 @@
             </form>
     {% endif %}
 {% endfor %}
+<br><a>My articles:</a></br>
+{% for article in articles %}
+<br><li><a href="{% url 'article_url' article.id %}">{{ article }}</a></li></br>
+{% endfor %}
 {% endblock %}
