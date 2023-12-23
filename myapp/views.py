@@ -157,6 +157,7 @@ class UserDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['pk'] = self.kwargs['pk']
         context['topics'] = Topic.objects.filter(prefers=kwargs['object'].id)
+        context['articles'] = Article.objects.filter(author=kwargs['object'].id)
         return context
 
 
